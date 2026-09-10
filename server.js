@@ -15,16 +15,6 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Get the actual Railway URL
-const getAppUrl = () => {
-  // If RAILWAY_STATIC_URL is set, use it (production)
-  if (process.env.RAILWAY_STATIC_URL) {
-    return process.env.RAILWAY_STATIC_URL;
-  }
-  // Otherwise use the configured URL
-  return process.env.TELEGRAM_MINI_APP_URL || 'https://arabstarsmm.railway.app';
-};
-
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -119,17 +109,16 @@ app.get('/api/order/:orderId', async (req, res) => {
   }
 });
 
-// Serve Mini App with correct URL
+// Serve Mini App
 app.get('/app', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Telegram Bot Commands
 bot.start((ctx) => {
-  const appUrl = getAppUrl();
-  const miniAppUrl = `${appUrl}/app`;
+  const miniAppUrl = `https://arabstarsmm-production.up.railway.app/app`;
   
-  console.log(`🌐 Mini App URL: ${miniAppUrl}`);
+  console.log(`🚀 Mini App URL: ${miniAppUrl}`);
   
   const keyboard = {
     inline_keyboard: [
@@ -183,5 +172,5 @@ app.get('/health', (req, res) => {
 // Server
 app.listen(PORT, () => {
   console.log(`🚀 ArabStarsSMM Server running on port ${PORT}`);
-  console.log(`📱 App URL: ${getAppUrl()}/app`);
+  console.log(`📱 App URL: https://arabstarsmm-production.up.railway.app/app`);
 });
