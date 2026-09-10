@@ -104,11 +104,18 @@ app.get('/api/order/:orderId', async (req, res) => {
   }
 });
 
+// Serve Mini App HTML
+app.get('/', (req, res) => {
+  res.sendFile(new URL('./public/index.html', import.meta.url).pathname);
+});
+
 // Telegram Bot Commands
 bot.start((ctx) => {
+  const miniAppUrl = `${process.env.TELEGRAM_MINI_APP_URL}/index.html?userId=${ctx.from.id}`;
+  
   const keyboard = {
     inline_keyboard: [
-      [{ text: '🚀 فتح التطبيق', url: `${process.env.TELEGRAM_MINI_APP_URL}?userId=${ctx.from.id}` }],
+      [{ text: '🚀 فتح التطبيق', web_app: { url: miniAppUrl } }],
       [{ text: '💬 الدعم', url: 'https://t.me/ArabStarsSMM' }]
     ]
   };
