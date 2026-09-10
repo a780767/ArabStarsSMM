@@ -1,6 +1,6 @@
 // Telegram WebApp Integration
 let tg = window.Telegram.WebApp;
-let userId = new URLSearchParams(window.location.search).get('userId');
+let userId = tg.initData;
 let orders = [];
 
 // Initialize
@@ -33,8 +33,8 @@ async function loadDashboard() {
 
 // Display Balance
 function displayBalance(data) {
-    const balance = data.balance || data.success === true ? data.balance : '0.00';
-    document.getElementById('balance').textContent = balance.toFixed(2);
+    const balance = data.balance || (data.success === true ? data.balance : '0.00');
+    document.getElementById('balance').textContent = parseFloat(balance).toFixed(2);
 }
 
 // Display Services
