@@ -4,8 +4,13 @@ import 'express-async-errors';
 import dotenv from 'dotenv';
 import { Telegraf } from 'telegraf';
 import axios from 'axios';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -13,7 +18,7 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Initialize Telegram Bot
 const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
@@ -104,18 +109,18 @@ app.get('/api/order/:orderId', async (req, res) => {
   }
 });
 
-// Serve Mini App HTML
-app.get('/', (req, res) => {
-  res.sendFile(new URL('./public/index.html', import.meta.url).pathname);
+// Serve Mini App
+app.get('/app', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Telegram Bot Commands
 bot.start((ctx) => {
-  const miniAppUrl = `${process.env.TELEGRAM_MINI_APP_URL}/index.html?userId=${ctx.from.id}`;
+  const miniAppUrl = process.env.TELEGRAM_MINI_APP_URL || 'https://arabstarsmm.railway.app';
   
   const keyboard = {
     inline_keyboard: [
-      [{ text: '🚀 فتح التطبيق', web_app: { url: miniAppUrl } }],
+      [{ text: '🚀 فتح التطبيق', web_app: { url: `${miniAppUrl}/app` } }],
       [{ text: '💬 الدعم', url: 'https://t.me/ArabStarsSMM' }]
     ]
   };
